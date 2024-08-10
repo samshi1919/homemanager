@@ -5,13 +5,18 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/zuoer_home?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
-    password: rootroot
+    password: root
+
+logging:
+  level:
+    com.zuoer: debug
+    org.springframework: warn
 
 
 knife4j:
   enable: true
   openapi:
-    title: zuoer小程序接口
+    title: zuoer api
     description:
     email: 240635165@qq.com
     concat: xm
@@ -22,12 +27,12 @@ knife4j:
     terms-of-service-url: https://stackoverflow.com/
     group:
       admin:
-        group-name: 后台管理接口
+        group-name: admin
         api-rule: package
         api-rule-resources:
-          - com.zuoer.homeManager.controller.admin
+          - com.zuoer.controller.admin
       mini:
-        group-name: 小程序接口
+        group-name: wechat
         api-rule: package
         api-rule-resources:
-          - com.zuoer.homeManager.controller.mini
+          - com.zuoer.controller.mini

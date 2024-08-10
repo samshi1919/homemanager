@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zuoer.mapper.PermissionRequestMapper">
+
+    <resultMap id="PermissionRequestMap" type="com.zuoer.domain.entity.PermissionRequest">
+        <result column="request_id" property="requestId"/>
+        <result column="user_id" property="userId"/>
+        <result column="role_name" property="roleName"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!--通过查询实体作为筛选条件查询-->
+    <select id="listPermissionRequest" resultType="com.zuoer.domain.vo.PermissionRequestVO">
+        select *
+        from permission_request
+        <where>
+            1=1
+            <if test="queryParams.requestId != null">
+                and request_id = #{queryParams.requestId}
+            </if>
+            <if test="queryParams.userId != null">
+                and user_id = #{queryParams.userId}
+            </if>
+            <if test="queryParams.roleName != null and queryParams.roleName != ''">
+                and role_name = #{queryParams.roleName}
+            </if>
+            <if test="queryParams.status != null">
+                and status = #{queryParams.status}
+            </if>
+            <if test="queryParams.createTime != null">
+                and create_time = #{queryParams.createTime}
+            </if>
+            <if test="queryParams.updateTime != null">
+                and update_time = #{queryParams.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="requestId" useGeneratedKeys="true">
+        insert into permission_request(user_id, role_name, status, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.userId}, #{entity.roleName}, #{entity.status}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="requestId" useGeneratedKeys="true">
+        insert into permission_request(user_id, role_name, status, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.userId}, #{entity.roleName}, #{entity.status}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+         user_id = values(user_id) , role_name = values(role_name) , status = values(status) , create_time = values(create_time) , update_time = values(update_time)     </insert>
+
+</mapper>
+

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zuoer.mapper.SysRoleMapper">
+
+    <resultMap id="SysRoleMap" type="com.zuoer.domain.entity.SysRole">
+        <result column="role_id" property="roleId"/>
+        <result column="role_name" property="roleName"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!--通过查询实体作为筛选条件查询-->
+    <select id="listSysRole" resultType="com.zuoer.domain.vo.SysRoleVO">
+        select *
+        from sys_role
+        <where>
+            1=1
+            <if test="queryParams.roleId != null">
+                and role_id = #{queryParams.roleId}
+            </if>
+            <if test="queryParams.roleName != null and queryParams.roleName != ''">
+                and role_name = #{queryParams.roleName}
+            </if>
+            <if test="queryParams.createTime != null">
+                and create_time = #{queryParams.createTime}
+            </if>
+            <if test="queryParams.updateTime != null">
+                and update_time = #{queryParams.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="roleId" useGeneratedKeys="true">
+        insert into sys_role(role_name, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.roleName}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="roleId" useGeneratedKeys="true">
+        insert into sys_role(role_name, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.roleName}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+         role_name = values(role_name) , create_time = values(create_time) , update_time = values(update_time)     </insert>
+
+</mapper>
+

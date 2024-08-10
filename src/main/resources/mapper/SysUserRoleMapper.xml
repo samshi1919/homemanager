@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zuoer.mapper.SysUserRoleMapper">
+
+    <resultMap id="SysUserRoleMap" type="com.zuoer.domain.entity.SysUserRole">
+        <result column="user_role_id" property="userRoleId"/>
+        <result column="user_id" property="userId"/>
+        <result column="role_id" property="roleId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!--通过查询实体作为筛选条件查询-->
+    <select id="listSysUserRole" resultType="com.zuoer.domain.vo.SysUserRoleVO">
+        select *
+        from sys_user_role
+        <where>
+            1=1
+            <if test="queryParams.userRoleId != null">
+                and user_role_id = #{queryParams.userRoleId}
+            </if>
+            <if test="queryParams.userId != null">
+                and user_id = #{queryParams.userId}
+            </if>
+            <if test="queryParams.roleId != null">
+                and role_id = #{queryParams.roleId}
+            </if>
+            <if test="queryParams.createTime != null">
+                and create_time = #{queryParams.createTime}
+            </if>
+            <if test="queryParams.updateTime != null">
+                and update_time = #{queryParams.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="userRoleId" useGeneratedKeys="true">
+        insert into sys_user_role(user_id, role_id, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.userId}, #{entity.roleId}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="userRoleId" useGeneratedKeys="true">
+        insert into sys_user_role(user_id, role_id, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.userId}, #{entity.roleId}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+         user_id = values(user_id) , role_id = values(role_id) , create_time = values(create_time) , update_time = values(update_time)     </insert>
+
+</mapper>
+

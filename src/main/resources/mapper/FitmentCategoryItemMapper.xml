@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zuoer.mapper.FitmentCategoryItemMapper">
+
+    <resultMap id="FitmentCategoryItemMap" type="com.zuoer.domain.entity.FitmentCategoryItem">
+        <result column="item_id" property="itemId"/>
+        <result column="house_id" property="houseId"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="create_date" property="createDate"/>
+        <result column="construction_desc" property="constructionDesc"/>
+        <result column="suggestion" property="suggestion"/>
+        <result column="check_date" property="checkDate"/>
+        <result column="check_desc" property="checkDesc"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!--通过查询实体作为筛选条件查询-->
+    <select id="listFitmentCategoryItem" resultType="com.zuoer.domain.vo.FitmentCategoryItemVO">
+        select *
+        from fitment_category_item
+        <where>
+            1=1
+            <if test="queryParams.itemId != null">
+                and item_id = #{queryParams.itemId}
+            </if>
+            <if test="queryParams.houseId != null">
+                and house_id = #{queryParams.houseId}
+            </if>
+            <if test="queryParams.categoryId != null">
+                and category_id = #{queryParams.categoryId}
+            </if>
+            <if test="queryParams.createDate != null">
+                and create_date = #{queryParams.createDate}
+            </if>
+            <if test="queryParams.constructionDesc != null and queryParams.constructionDesc != ''">
+                and construction_desc = #{queryParams.constructionDesc}
+            </if>
+            <if test="queryParams.suggestion != null and queryParams.suggestion != ''">
+                and suggestion = #{queryParams.suggestion}
+            </if>
+            <if test="queryParams.checkDate != null">
+                and check_date = #{queryParams.checkDate}
+            </if>
+            <if test="queryParams.checkDesc != null and queryParams.checkDesc != ''">
+                and check_desc = #{queryParams.checkDesc}
+            </if>
+            <if test="queryParams.createUser != null and queryParams.createUser != ''">
+                and create_user = #{queryParams.createUser}
+            </if>
+            <if test="queryParams.updateUser != null and queryParams.updateUser != ''">
+                and update_user = #{queryParams.updateUser}
+            </if>
+            <if test="queryParams.createTime != null">
+                and create_time = #{queryParams.createTime}
+            </if>
+            <if test="queryParams.updateTime != null">
+                and update_time = #{queryParams.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="itemId" useGeneratedKeys="true">
+        insert into fitment_category_item(house_id, category_id, create_date, construction_desc, suggestion, check_date, check_desc, create_user, update_user, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.houseId}, #{entity.categoryId}, #{entity.createDate}, #{entity.constructionDesc}, #{entity.suggestion}, #{entity.checkDate}, #{entity.checkDesc}, #{entity.createUser}, #{entity.updateUser}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="itemId" useGeneratedKeys="true">
+        insert into fitment_category_item(house_id, category_id, create_date, construction_desc, suggestion, check_date, check_desc, create_user, update_user, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.houseId}, #{entity.categoryId}, #{entity.createDate}, #{entity.constructionDesc}, #{entity.suggestion}, #{entity.checkDate}, #{entity.checkDesc}, #{entity.createUser}, #{entity.updateUser}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+         house_id = values(house_id) , category_id = values(category_id) , create_date = values(create_date) , construction_desc = values(construction_desc) , suggestion = values(suggestion) , check_date = values(check_date) , check_desc = values(check_desc) , create_user = values(create_user) , update_user = values(update_user) , create_time = values(create_time) , update_time = values(update_time)     </insert>
+
+</mapper>
+

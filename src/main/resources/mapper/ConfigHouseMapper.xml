@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zuoer.mapper.ConfigHouseMapper">
+
+    <resultMap id="ConfigHouseMap" type="com.zuoer.domain.entity.ConfigHouse">
+        <result column="house_id" property="houseId"/>
+        <result column="house_name" property="houseName"/>
+        <result column="address" property="address"/>
+        <result column="gps_lat_lon" property="gpsLatLon"/>
+        <result column="live_streaming_link" property="liveStreamingLink"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!--通过查询实体作为筛选条件查询-->
+    <select id="listConfigHouse" resultType="com.zuoer.domain.vo.ConfigHouseVO">
+        select *
+        from config_house
+        <where>
+            1=1
+            <if test="queryParams.houseId != null">
+                and house_id = #{queryParams.houseId}
+            </if>
+            <if test="queryParams.houseName != null and queryParams.houseName != ''">
+                and house_name = #{queryParams.houseName}
+            </if>
+            <if test="queryParams.address != null and queryParams.address != ''">
+                and address = #{queryParams.address}
+            </if>
+            <if test="queryParams.gpsLatLon != null and queryParams.gpsLatLon != ''">
+                and gps_lat_lon = #{queryParams.gpsLatLon}
+            </if>
+            <if test="queryParams.liveStreamingLink != null and queryParams.liveStreamingLink != ''">
+                and live_streaming_link = #{queryParams.liveStreamingLink}
+            </if>
+            <if test="queryParams.createTime != null">
+                and create_time = #{queryParams.createTime}
+            </if>
+            <if test="queryParams.updateTime != null">
+                and update_time = #{queryParams.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="houseId" useGeneratedKeys="true">
+        insert into config_house(house_name, address, gps_lat_lon, live_streaming_link, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.houseName}, #{entity.address}, #{entity.gpsLatLon}, #{entity.liveStreamingLink}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="houseId" useGeneratedKeys="true">
+        insert into config_house(house_name, address, gps_lat_lon, live_streaming_link, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.houseName}, #{entity.address}, #{entity.gpsLatLon}, #{entity.liveStreamingLink}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+         house_name = values(house_name) , address = values(address) , gps_lat_lon = values(gps_lat_lon) , live_streaming_link = values(live_streaming_link) , create_time = values(create_time) , update_time = values(update_time)     </insert>
+
+</mapper>
+

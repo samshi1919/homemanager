@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zuoer.mapper.ItemAttachmentMapper">
+
+    <resultMap id="ItemAttachmentMap" type="com.zuoer.domain.entity.ItemAttachment">
+        <result column="file_id" property="fileId"/>
+        <result column="item_id" property="itemId"/>
+        <result column="is_check" property="isCheck"/>
+        <result column="original_file_name" property="originalFileName"/>
+        <result column="save_file_name" property="saveFileName"/>
+        <result column="save_path" property="savePath"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!--通过查询实体作为筛选条件查询-->
+    <select id="listItemAttachment" resultType="com.zuoer.domain.vo.ItemAttachmentVO">
+        select *
+        from item_attachment
+        <where>
+            1=1
+            <if test="queryParams.fileId != null">
+                and file_id = #{queryParams.fileId}
+            </if>
+            <if test="queryParams.itemId != null">
+                and item_id = #{queryParams.itemId}
+            </if>
+            <if test="queryParams.isCheck != null">
+                and is_check = #{queryParams.isCheck}
+            </if>
+            <if test="queryParams.originalFileName != null and queryParams.originalFileName != ''">
+                and original_file_name = #{queryParams.originalFileName}
+            </if>
+            <if test="queryParams.saveFileName != null and queryParams.saveFileName != ''">
+                and save_file_name = #{queryParams.saveFileName}
+            </if>
+            <if test="queryParams.savePath != null and queryParams.savePath != ''">
+                and save_path = #{queryParams.savePath}
+            </if>
+            <if test="queryParams.createUser != null and queryParams.createUser != ''">
+                and create_user = #{queryParams.createUser}
+            </if>
+            <if test="queryParams.updateUser != null and queryParams.updateUser != ''">
+                and update_user = #{queryParams.updateUser}
+            </if>
+            <if test="queryParams.createTime != null">
+                and create_time = #{queryParams.createTime}
+            </if>
+            <if test="queryParams.updateTime != null">
+                and update_time = #{queryParams.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="fileId" useGeneratedKeys="true">
+        insert into item_attachment(item_id, is_check, original_file_name, save_file_name, save_path, create_user, update_user, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.itemId}, #{entity.isCheck}, #{entity.originalFileName}, #{entity.saveFileName}, #{entity.savePath}, #{entity.createUser}, #{entity.updateUser}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="fileId" useGeneratedKeys="true">
+        insert into item_attachment(item_id, is_check, original_file_name, save_file_name, save_path, create_user, update_user, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.itemId}, #{entity.isCheck}, #{entity.originalFileName}, #{entity.saveFileName}, #{entity.savePath}, #{entity.createUser}, #{entity.updateUser}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+         item_id = values(item_id) , is_check = values(is_check) , original_file_name = values(original_file_name) , save_file_name = values(save_file_name) , save_path = values(save_path) , create_user = values(create_user) , update_user = values(update_user) , create_time = values(create_time) , update_time = values(update_time)     </insert>
+
+</mapper>
+

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zuoer.mapper.HouseUserMapper">
+
+    <resultMap id="HouseUserMap" type="com.zuoer.domain.entity.HouseUser">
+        <result column="house_user_id" property="houseUserId"/>
+        <result column="house_id" property="houseId"/>
+        <result column="user_id" property="userId"/>
+        <result column="house_role" property="houseRole"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!--通过查询实体作为筛选条件查询-->
+    <select id="listHouseUser" resultType="com.zuoer.domain.vo.HouseUserVO">
+        select *
+        from house_user
+        <where>
+            1=1
+            <if test="queryParams.houseUserId != null">
+                and house_user_id = #{queryParams.houseUserId}
+            </if>
+            <if test="queryParams.houseId != null">
+                and house_id = #{queryParams.houseId}
+            </if>
+            <if test="queryParams.userId != null">
+                and user_id = #{queryParams.userId}
+            </if>
+            <if test="queryParams.houseRole != null">
+                and house_role = #{queryParams.houseRole}
+            </if>
+            <if test="queryParams.createTime != null">
+                and create_time = #{queryParams.createTime}
+            </if>
+            <if test="queryParams.updateTime != null">
+                and update_time = #{queryParams.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="houseUserId" useGeneratedKeys="true">
+        insert into house_user(house_id, user_id, house_role, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.houseId}, #{entity.userId}, #{entity.houseRole}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="houseUserId" useGeneratedKeys="true">
+        insert into house_user(house_id, user_id, house_role, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.houseId}, #{entity.userId}, #{entity.houseRole}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+         house_id = values(house_id) , user_id = values(user_id) , house_role = values(house_role) , create_time = values(create_time) , update_time = values(update_time)     </insert>
+
+</mapper>
+

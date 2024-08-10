@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zuoer.mapper.ConfigFitmentCategoryMapper">
+
+    <resultMap id="ConfigFitmentCategoryMap" type="com.zuoer.domain.entity.ConfigFitmentCategory">
+        <result column="category_id" property="categoryId"/>
+        <result column="category_name" property="categoryName"/>
+        <result column="fitment_stage" property="fitmentStage"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!--通过查询实体作为筛选条件查询-->
+    <select id="listConfigFitmentCategory" resultType="com.zuoer.domain.vo.ConfigFitmentCategoryVO">
+        select *
+        from config_fitment_category
+        <where>
+            1=1
+            <if test="queryParams.categoryId != null">
+                and category_id = #{queryParams.categoryId}
+            </if>
+            <if test="queryParams.categoryName != null and queryParams.categoryName != ''">
+                and category_name = #{queryParams.categoryName}
+            </if>
+            <if test="queryParams.fitmentStage != null">
+                and fitment_stage = #{queryParams.fitmentStage}
+            </if>
+            <if test="queryParams.createTime != null">
+                and create_time = #{queryParams.createTime}
+            </if>
+            <if test="queryParams.updateTime != null">
+                and update_time = #{queryParams.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="categoryId" useGeneratedKeys="true">
+        insert into config_fitment_category(category_name, fitment_stage, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.categoryName}, #{entity.fitmentStage}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="categoryId" useGeneratedKeys="true">
+        insert into config_fitment_category(category_name, fitment_stage, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.categoryName}, #{entity.fitmentStage}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+         category_name = values(category_name) , fitment_stage = values(fitment_stage) , create_time = values(create_time) , update_time = values(update_time)     </insert>
+
+</mapper>
+

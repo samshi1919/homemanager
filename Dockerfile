@@ -13,5 +13,8 @@ COPY target/homeManager-0.1.jar /app/homeManager-0.1.jar
 # 运行 Spring Boot 应用
 ENTRYPOINT ["java", "-jar", "/app/homeManager-0.1.jar"]
 
+# 使用 CMD 指令来指定默认的 profile
+CMD ["--spring.profiles.active=prod"]
+
 # 暴露应用运行的端口
 EXPOSE 8080

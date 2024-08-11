@@ -3,7 +3,6 @@ package com.zuoer.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.sun.istack.internal.NotNull;
 import io.swagger.annotations.*;
 import lombok.Data;
 import java.util.Date;

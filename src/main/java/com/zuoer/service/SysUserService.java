@@ -1,12 +1,11 @@
 package com.zuoer.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zuoer.domain.dto.SysUserLoginDTO;
 import com.zuoer.domain.entity.SysUser;
 import com.zuoer.common.base.QueryPageParam;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zuoer.domain.vo.SysUserVO;
-
-import java.util.List;
 
 /**
  * (SysUser)表服务接口
@@ -22,6 +21,15 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     IPage<SysUser> queryPage(QueryPageParam queryPageParam);
+
+    /**
+     * 用户登录
+     *
+     * @param sysUserLoginDTO
+     * @return
+     */
+    SysUserVO login(SysUserLoginDTO sysUserLoginDTO);
+
 
 }
 

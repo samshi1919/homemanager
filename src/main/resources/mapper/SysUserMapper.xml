@@ -15,6 +15,36 @@
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
+
+    <resultMap id="SysUserInfoMap" type="com.zuoer.domain.vo.SysUserVO">
+        <!-- 基本字段 -->
+        <result column="user_id" property="userId"/>
+        <result column="wechat_account" property="wechatAccount"/>
+        <result column="wechat_name" property="wechatName"/>
+        <result column="wechat_avatar" property="wechatAvatar"/>
+        <result column="open_id" property="openId"/>
+        <result column="phone_number" property="phoneNumber"/>
+        <result column="last_login_time" property="lastLoginTime"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+
+        <!-- 角色列表 -->
+        <collection property="roleNames" ofType="java.lang.String">
+            <result column="role_name"/>
+        </collection>
+
+        <!-- 关联房屋列表 -->
+        <collection property="houseList" ofType="com.zuoer.domain.entity.ConfigHouse">
+            <result column="house_id" property="houseId"/>
+            <result column="house_name" property="houseName"/>
+            <result column="address" property="address"/>
+            <result column="gps_lat_lon" property="gpsLatLon"/>
+            <result column="live_streaming_link" property="liveStreamingLink"/>
+        </collection>
+    </resultMap>
+
+
     <!--通过查询实体作为筛选条件查询-->
     <select id="listSysUser" resultType="com.zuoer.domain.vo.SysUserVO">
         select *
@@ -56,22 +86,60 @@
 
     <!-- 批量插入 -->
     <insert id="insertBatch" keyProperty="userId" useGeneratedKeys="true">
-        insert into sys_user(wechat_account, wechat_name, wechat_avatar, open_id, phone_number, last_login_time, status, create_time, update_time)
+        insert into sys_user(wechat_account, wechat_name, wechat_avatar, open_id, phone_number, last_login_time, status,
+        create_time, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.wechatAccount}, #{entity.wechatName}, #{entity.wechatAvatar}, #{entity.openId}, #{entity.phoneNumber}, #{entity.lastLoginTime}, #{entity.status}, #{entity.createTime}, #{entity.updateTime})
+            (#{entity.wechatAccount}, #{entity.wechatName}, #{entity.wechatAvatar}, #{entity.openId},
+            #{entity.phoneNumber}, #{entity.lastLoginTime}, #{entity.status}, #{entity.createTime},
+            #{entity.updateTime})
         </foreach>
     </insert>
 
     <!-- 批量插入或按主键更新 -->
     <insert id="insertOrUpdateBatch" keyProperty="userId" useGeneratedKeys="true">
-        insert into sys_user(wechat_account, wechat_name, wechat_avatar, open_id, phone_number, last_login_time, status, create_time, update_time)
+        insert into sys_user(wechat_account, wechat_name, wechat_avatar, open_id, phone_number, last_login_time, status,
+        create_time, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.wechatAccount}, #{entity.wechatName}, #{entity.wechatAvatar}, #{entity.openId}, #{entity.phoneNumber}, #{entity.lastLoginTime}, #{entity.status}, #{entity.createTime}, #{entity.updateTime})
+            (#{entity.wechatAccount}, #{entity.wechatName}, #{entity.wechatAvatar}, #{entity.openId},
+            #{entity.phoneNumber}, #{entity.lastLoginTime}, #{entity.status}, #{entity.createTime},
+            #{entity.updateTime})
         </foreach>
         on duplicate key update
-         wechat_account = values(wechat_account) , wechat_name = values(wechat_name) , wechat_avatar = values(wechat_avatar) , open_id = values(open_id) , phone_number = values(phone_number) , last_login_time = values(last_login_time) , status = values(status) , create_time = values(create_time) , update_time = values(update_time)     </insert>
+        wechat_account = values(wechat_account) , wechat_name = values(wechat_name) , wechat_avatar =
+        values(wechat_avatar) , open_id = values(open_id) , phone_number = values(phone_number) , last_login_time =
+        values(last_login_time) , status = values(status) , create_time = values(create_time) , update_time =
+        values(update_time)
+    </insert>
+
+
+    <select id="getUserInfo" resultMap="SysUserInfoMap">
+        select
+            su.*,
+            sr.role_name ,
+            ch.house_id ,
+            ch.house_name ,
+            ch.address ,
+            ch.gps_lat_lon ,
+            ch.live_streaming_link
+        from
+            sys_user su
+                left join sys_user_role sur on
+                sur.user_id = su.user_id
+                left join sys_role sr on
+                sr.role_id = sur.role_id
+                left join house_user hu on
+                hu.user_id = su.user_id
+                left join config_house ch on
+                ch.house_id = hu.house_id
+        <where>
+            <if test="query.userId != null">and  su.user_id  = #{query.userId} </if>
+            <if test="query.phoneNumber != null and query.phoneNumber != ''">and  su.phone_number = #{query.phoneNumber} </if>
+        </where>
+
+    </select>
+
 
 </mapper>
 

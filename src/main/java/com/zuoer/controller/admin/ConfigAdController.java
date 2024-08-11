@@ -28,7 +28,6 @@ public class ConfigAdController{
 
     @ApiOperation(value = "新增数据")
     @PostMapping("/save")
-    @Log(module = "xx模块", function = "新增xx")
     public ResponseData save(@Validated @RequestBody ConfigAd configAd) {
         configAdService.save(configAd);
         return ResponseData.success();
@@ -36,7 +35,6 @@ public class ConfigAdController{
     
     @ApiOperation("修改数据")
     @PutMapping(value = "/update")
-    @Log(module = "xx模块", function = "修改xx")
     public ResponseData update(@Validated @RequestBody ConfigAd configAd) {
         configAdService.updateById(configAd);
         return ResponseData.success();
@@ -44,7 +42,6 @@ public class ConfigAdController{
 
     @ApiOperation("删除数据")
     @DeleteMapping(value = "/delete/{id}")
-    @Log(module = "xx模块", function = "删除xx")
     public ResponseData delete(@PathVariable Long id) {
         configAdService.removeById(id);
         return ResponseData.success();
@@ -52,7 +49,6 @@ public class ConfigAdController{
     
     @ApiOperation("分页查询")
     @PostMapping(value = "/queryPage")
-    @Log(module = "系统模块", function = "分页查询xx")
     public ResponseData queryPage(@RequestBody @Validated QueryPageParam queryPageParam) {
         IPage<ConfigAd> page = configAdService.queryPage(queryPageParam);
         return ResponseData.success(ResponsePage.build(page.getTotal(), page.getRecords()));
@@ -60,7 +56,6 @@ public class ConfigAdController{
 
     @ApiOperation("查询所有")
     @GetMapping(value = "/queryAll")
-    @Log(module = "系统模块", function = "查询所有xx")
     public ResponseData queryAll() {
         List<ConfigAd> list = configAdService.list();
         return ResponseData.success(list);

@@ -33,7 +33,5 @@ public class ConfigHouse extends MyBaseModel  {
     
     @ApiModelProperty("直播链接")
     private String liveStreamingLink;
-    
 
- 
 }

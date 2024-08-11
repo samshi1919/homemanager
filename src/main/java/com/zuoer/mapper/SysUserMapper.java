@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.zuoer.domain.entity.SysUser;
 import com.zuoer.domain.query.SysUserQuery;
 import com.zuoer.domain.vo.SysUserVO;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * (SysUser)表数据库访问层
@@ -42,6 +43,8 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      * @throws org.springframework.jdbc.BadSqlGrammarException 入参是空List的时候会抛SQL语句错误的异常，请自行校验入参
      */
     int insertOrUpdateBatch(@Param("entities") List<SysUser> entities);
+
+    SysUserVO getUserInfo(@Param("query") SysUserQuery sysUserQuery);
 
 }
 

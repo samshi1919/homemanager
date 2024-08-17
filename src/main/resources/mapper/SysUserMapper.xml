@@ -35,12 +35,13 @@
         </collection>
 
         <!-- 关联房屋列表 -->
-        <collection property="houseList" ofType="com.zuoer.domain.entity.ConfigHouse">
+        <collection property="houseList" ofType="com.zuoer.domain.vo.ConfigHouseVO">
             <result column="house_id" property="houseId"/>
             <result column="house_name" property="houseName"/>
             <result column="address" property="address"/>
             <result column="gps_lat_lon" property="gpsLatLon"/>
             <result column="live_streaming_link" property="liveStreamingLink"/>
+            <result column="house_role" property="houseRole"/>
         </collection>
     </resultMap>
 
@@ -118,6 +119,7 @@
         select
             su.*,
             sr.role_name ,
+            hu.house_role,
             ch.house_id ,
             ch.house_name ,
             ch.address ,
@@ -138,6 +140,32 @@
             <if test="query.phoneNumber != null and query.phoneNumber != ''">and  su.phone_number = #{query.phoneNumber} </if>
         </where>
 
+    </select>
+
+    <select id="listUserInfo"  resultMap="SysUserInfoMap">
+        select
+            su.*,
+            sr.role_name ,
+            hu.house_role,
+            ch.house_id ,
+            ch.house_name ,
+            ch.address ,
+            ch.gps_lat_lon ,
+            ch.live_streaming_link
+        from
+            sys_user su
+            left join sys_user_role sur on
+            sur.user_id = su.user_id
+            left join sys_role sr on
+            sr.role_id = sur.role_id
+            left join house_user hu on
+            hu.user_id = su.user_id
+            left join config_house ch on
+            ch.house_id = hu.house_id
+        <where>
+            <if test="query.userId != null">and  su.user_id  = #{query.userId} </if>
+            <if test="query.phoneNumber != null and query.phoneNumber != ''">and  su.phone_number = #{query.phoneNumber} </if>
+        </where>
     </select>
 
 

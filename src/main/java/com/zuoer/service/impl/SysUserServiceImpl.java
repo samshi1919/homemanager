@@ -2,19 +2,15 @@ package com.zuoer.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zuoer.domain.dto.SysUserLoginDTO;
-import com.zuoer.domain.entity.PermissionRequest;
-import com.zuoer.domain.entity.SysRole;
-import com.zuoer.domain.entity.SysUserRole;
+import com.zuoer.domain.dto.WechatUserUpdate;
+import com.zuoer.domain.entity.*;
 import com.zuoer.domain.query.SysUserQuery;
+import com.zuoer.domain.vo.ConfigHouseVO;
 import com.zuoer.domain.vo.SysUserVO;
 import com.zuoer.enums.RequestStatus;
 import com.zuoer.enums.UserStatus;
 import com.zuoer.mapper.SysUserMapper;
-import com.zuoer.domain.entity.SysUser;
-import com.zuoer.service.PermissionRequestService;
-import com.zuoer.service.SysRoleService;
-import com.zuoer.service.SysUserRoleService;
-import com.zuoer.service.SysUserService;
+import com.zuoer.service.*;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +20,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * (SysUser)表服务实现类
@@ -41,6 +40,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private final SysUserRoleService sysUserRoleService;
 
     private final PermissionRequestService permissionRequestService;
+
+    private final HouseUserService houseUserService;
 
     @Override
     public IPage<SysUser> queryPage(QueryPageParam queryPageParam) {
@@ -103,6 +104,57 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             }
         }
         return sysUserVO;
+
+    }
+
+    @Override
+    public SysUserVO getUserInfo(String phoneNumber) {
+        SysUserQuery query = new SysUserQuery();
+        query.setPhoneNumber(phoneNumber);
+        return this.baseMapper.getUserInfo(query);
+    }
+
+    @Override
+    public List<SysUserVO> getUserList(SysUserQuery query) {
+        return this.baseMapper.listUserInfo(query);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateWechatUserInfo(WechatUserUpdate userUpdate) {
+        Long userId = userUpdate.getUserId();
+        //查询改用户是否存在
+        SysUser sysUser = this.getById(userId);
+        if (sysUser != null) {
+            //更新用户角色
+            //删除原来的角色
+            sysUserRoleService.remove(new LambdaQueryWrapper<SysUserRole>()
+                    .eq(SysUserRole::getUserId, userId));
+            //新增用户角色
+            SysUserRole sysUserRole = new SysUserRole();
+            sysUserRole.setUserId(userId);
+            sysUserRole.setRoleId(userUpdate.getRoleId());
+            sysUserRoleService.save(sysUserRole);
+            //更新用户房屋信息
+            //删除原来的用户房屋关系
+            houseUserService.remove(new LambdaQueryWrapper<HouseUser>()
+                    .eq(HouseUser::getUserId, userId));
+            //新增用户房屋关系
+            List<ConfigHouseVO> houseList = userUpdate.getHouseList();
+            if (houseList != null && !houseList.isEmpty()) {
+                List<HouseUser> houseUserList = houseList.stream()
+                        .map(configHouseVO -> {
+                            HouseUser houseUser = new HouseUser();
+                            houseUser.setUserId(userId);
+                            houseUser.setHouseId(configHouseVO.getHouseId());
+                            houseUser.setHouseRole(configHouseVO.getHouseRole());
+                            return houseUser;
+                        })
+                        .collect(Collectors.toList());
+                houseUserService.saveBatch(houseUserList);
+            }
+        }
+
 
     }
 }

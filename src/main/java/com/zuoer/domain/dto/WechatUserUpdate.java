@@ -1,10 +1,11 @@
-package com.zuoer.domain.vo;
+package com.zuoer.domain.dto;
 
 
-import com.zuoer.domain.entity.ConfigHouse;
-import com.zuoer.domain.entity.SysUser;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.*;
+import com.zuoer.domain.entity.SysUser;
+import com.zuoer.domain.vo.ConfigHouseVO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -18,10 +19,10 @@ import java.util.List;
 @ApiModel("")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SysUserVO extends SysUser {
+public class WechatUserUpdate extends SysUser {
 
-    @ApiModelProperty("角色")
-    private List<String> roleNames;
+    @ApiModelProperty("角色Id")
+    private Long roleId;
 
     @ApiModelProperty("关联房屋")
     private List<ConfigHouseVO> houseList;

@@ -46,5 +46,8 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     SysUserVO getUserInfo(@Param("query") SysUserQuery sysUserQuery);
 
+
+    List<SysUserVO> listUserInfo(@Param("query") SysUserQuery sysUserQuery);
+
 }
 

@@ -13,6 +13,8 @@ import com.zuoer.service.ConfigAdService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.List;
 
 @Api(tags = "广告配置表相关API")
 @RestController
-@RequestMapping("/configAd")
+@RequestMapping("/admin/configAd")
 @RequiredArgsConstructor
 public class ConfigAdController{
 
@@ -53,6 +55,7 @@ public class ConfigAdController{
         IPage<ConfigAd> page = configAdService.queryPage(queryPageParam);
         return ResponseData.success(ResponsePage.build(page.getTotal(), page.getRecords()));
     }
+
 
     @ApiOperation("查询所有")
     @GetMapping(value = "/queryAll")

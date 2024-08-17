@@ -11,3 +11,6 @@ logging:
   level:
     com.zuoer: debug
     org.springframework: warn
+
+shiro:
+  enabled: false

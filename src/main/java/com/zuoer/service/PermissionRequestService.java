@@ -22,5 +22,10 @@ public interface PermissionRequestService extends IService<PermissionRequest> {
      */   
     IPage<PermissionRequest> queryPage(QueryPageParam queryPageParam);
 
+    /**
+     * 处理申请
+     */
+    void dealRequest(PermissionRequest request);
+
 }
 

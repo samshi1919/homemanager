@@ -4,8 +4,10 @@
 
     <resultMap id="FitmentCategoryItemMap" type="com.zuoer.domain.entity.FitmentCategoryItem">
         <result column="item_id" property="itemId"/>
+        <result column="item_name" property="itemName"/>
         <result column="house_id" property="houseId"/>
         <result column="category_id" property="categoryId"/>
+        <result column="cover_url" property="coverUrl"/>
         <result column="create_date" property="createDate"/>
         <result column="construction_desc" property="constructionDesc"/>
         <result column="suggestion" property="suggestion"/>
@@ -26,11 +28,17 @@
             <if test="queryParams.itemId != null">
                 and item_id = #{queryParams.itemId}
             </if>
+            <if test="queryParams.itemName != null and queryParams.itemName != ''">
+                and item_name = #{queryParams.itemName}
+            </if>
             <if test="queryParams.houseId != null">
                 and house_id = #{queryParams.houseId}
             </if>
             <if test="queryParams.categoryId != null">
                 and category_id = #{queryParams.categoryId}
+            </if>
+            <if test="queryParams.coverUrl != null and queryParams.coverUrl != ''">
+                and cover_url = #{queryParams.coverUrl}
             </if>
             <if test="queryParams.createDate != null">
                 and create_date = #{queryParams.createDate}
@@ -64,22 +72,22 @@
 
     <!-- 批量插入 -->
     <insert id="insertBatch" keyProperty="itemId" useGeneratedKeys="true">
-        insert into fitment_category_item(house_id, category_id, create_date, construction_desc, suggestion, check_date, check_desc, create_user, update_user, create_time, update_time)
+        insert into fitment_category_item(item_name, house_id, category_id, cover_url, create_date, construction_desc, suggestion, check_date, check_desc, create_user, update_user, create_time, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.houseId}, #{entity.categoryId}, #{entity.createDate}, #{entity.constructionDesc}, #{entity.suggestion}, #{entity.checkDate}, #{entity.checkDesc}, #{entity.createUser}, #{entity.updateUser}, #{entity.createTime}, #{entity.updateTime})
+        (#{entity.itemName}, #{entity.houseId}, #{entity.categoryId}, #{entity.coverUrl}, #{entity.createDate}, #{entity.constructionDesc}, #{entity.suggestion}, #{entity.checkDate}, #{entity.checkDesc}, #{entity.createUser}, #{entity.updateUser}, #{entity.createTime}, #{entity.updateTime})
         </foreach>
     </insert>
 
     <!-- 批量插入或按主键更新 -->
     <insert id="insertOrUpdateBatch" keyProperty="itemId" useGeneratedKeys="true">
-        insert into fitment_category_item(house_id, category_id, create_date, construction_desc, suggestion, check_date, check_desc, create_user, update_user, create_time, update_time)
+        insert into fitment_category_item(item_name, house_id, category_id, cover_url, create_date, construction_desc, suggestion, check_date, check_desc, create_user, update_user, create_time, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.houseId}, #{entity.categoryId}, #{entity.createDate}, #{entity.constructionDesc}, #{entity.suggestion}, #{entity.checkDate}, #{entity.checkDesc}, #{entity.createUser}, #{entity.updateUser}, #{entity.createTime}, #{entity.updateTime})
+            (#{entity.itemName}, #{entity.houseId}, #{entity.categoryId}, #{entity.coverUrl}, #{entity.createDate}, #{entity.constructionDesc}, #{entity.suggestion}, #{entity.checkDate}, #{entity.checkDesc}, #{entity.createUser}, #{entity.updateUser}, #{entity.createTime}, #{entity.updateTime})
         </foreach>
         on duplicate key update
-         house_id = values(house_id) , category_id = values(category_id) , create_date = values(create_date) , construction_desc = values(construction_desc) , suggestion = values(suggestion) , check_date = values(check_date) , check_desc = values(check_desc) , create_user = values(create_user) , update_user = values(update_user) , create_time = values(create_time) , update_time = values(update_time)     </insert>
+         item_name = values(item_name) , house_id = values(house_id) , category_id = values(category_id) , cover_url = values(cover_url) , create_date = values(create_date) , construction_desc = values(construction_desc) , suggestion = values(suggestion) , check_date = values(check_date) , check_desc = values(check_desc) , create_user = values(create_user) , update_user = values(update_user) , create_time = values(create_time) , update_time = values(update_time)     </insert>
 
 </mapper>
 
